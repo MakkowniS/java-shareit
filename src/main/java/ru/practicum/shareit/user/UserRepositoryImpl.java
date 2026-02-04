@@ -28,7 +28,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> getUserByEmail(String email) {
-        return Optional.ofNullable(USERS.values().stream().filter(user -> user.getEmail().equals(email)).findFirst().orElse(null));
+        return Optional.ofNullable(USERS.values().stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst()
+                .orElse(null));
     }
 
     @Override

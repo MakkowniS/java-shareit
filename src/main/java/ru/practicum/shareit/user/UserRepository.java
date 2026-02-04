@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
-    public List<User> getUsers();
+    List<User> getUsers();
 
-    public Optional<User> getUserById(Long id);
+    Optional<User> getUserById(Long id);
 
-    public Optional<User> getUserByEmail(String email);
+    Optional<User> getUserByEmail(String email);
 
-    public User saveUser(UserDto user);
+    User saveUser(UserDto user);
 
-    public User updateUser(Long userId, User user);
+    User updateUser(Long userId, User user);
 
-    public void deleteUser(Long userId);
+    void deleteUser(Long userId);
 }
