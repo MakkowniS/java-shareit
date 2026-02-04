@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
+
     List<User> getUsers();
 
     Optional<User> getUserById(Long id);
@@ -18,4 +19,5 @@ public interface UserRepository {
     User updateUser(Long userId, User user);
 
     void deleteUser(Long userId);
+
 }
