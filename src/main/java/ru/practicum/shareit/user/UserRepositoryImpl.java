@@ -2,7 +2,8 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDtoRequest;
+import ru.practicum.shareit.user.dto.UserDtoResponse;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
-    private static final HashMap<Long, User> USERS = new HashMap<>();
+    private final HashMap<Long, User> USERS = new HashMap<>();
 
     @Override
     public List<User> getUsers() {
@@ -35,9 +36,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User saveUser(UserDto user) {
-        User newUser = User.builder().id(getNextId()).name(user.getName()).email(user.getEmail()).build();
-        USERS.put(getNextId(), newUser);
+    public User saveUser(UserDtoRequest userDtoRequest) {
+        Long id = getNextId();
+        User newUser = UserMapper.mapDtoRequestToUser(userDtoRequest);
+        newUser.setId(id);
+
+        USERS.put(id, newUser);
         return newUser;
     }
 
@@ -53,7 +57,10 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private Long getNextId() {
-        long currentId = USERS.keySet().stream().mapToLong(id -> id).max().orElse(0);
+        long currentId = USERS.keySet().stream()
+                .mapToLong(id -> id)
+                .max()
+                .orElse(0);
         return ++currentId;
     }
 }

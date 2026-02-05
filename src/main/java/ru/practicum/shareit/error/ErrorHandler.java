@@ -18,6 +18,13 @@ import java.util.stream.Collectors;
 })
 public class ErrorHandler {
 
+    // Обработка DuplicateDataException
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateData(DuplicateDataException e){
+        return new ErrorResponse("Недоступно.", e.getMessage());
+    }
+
     // Обработка исключения NotFoundException
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)

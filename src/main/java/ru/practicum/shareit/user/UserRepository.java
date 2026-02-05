@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDtoRequest;
+import ru.practicum.shareit.user.dto.UserDtoResponse;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface UserRepository {
 
     Optional<User> getUserByEmail(String email);
 
-    User saveUser(UserDto user);
+    User saveUser(UserDtoRequest userDtoRequest);
 
     User updateUser(Long userId, User user);
 

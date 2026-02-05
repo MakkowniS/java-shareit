@@ -2,8 +2,10 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.error.DuplicateDataException;
 import ru.practicum.shareit.error.NotFoundException;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserDtoRequest;
+import ru.practicum.shareit.user.dto.UserDtoResponse;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -14,39 +16,39 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @Override
-    public List<UserDto> getUsers() {
-        return userRepository.getUsers().stream().map(userMapper::toUserDto).collect(Collectors.toList());
+    public List<UserDtoResponse> getUsers() {
+        return userRepository.getUsers().stream().map(UserMapper::mapToUserDto).collect(Collectors.toList());
     }
 
     @Override
-    public UserDto getUserById(long id) {
-        return userRepository.getUserById(id).map(userMapper::toUserDto).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+    public UserDtoResponse getUserById(long id) {
+        return userRepository.getUserById(id).map(UserMapper::mapToUserDto).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
     }
 
     @Override
-    public UserDto saveUser(UserDto userDto) {
-        isEmailExists(userDto);
-        return userMapper.toUserDto(userRepository.saveUser(userDto));
+    public UserDtoResponse saveUser(UserDtoRequest userDtoRequest) {
+        isEmailExists(userDtoRequest);
+        return UserMapper.mapToUserDto(userRepository.saveUser(userDtoRequest));
     }
 
     @Override
-    public UserDto updateUser(Long userId, UserDto userDto) {
-        User user = userRepository.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+    public UserDtoResponse updateUser(Long userId, UserDtoRequest userDtoRequest) {
+        User user = userRepository.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
+        if (userDtoRequest.getEmail() != null && !userDtoRequest.getEmail().equals(user.getEmail())) {
 
-            isEmailExists(userDto);
-            user.setEmail(userDto.getEmail());
+            isEmailExists(userDtoRequest);
+            user.setEmail(userDtoRequest.getEmail());
         }
 
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
+        if (userDtoRequest.getName() != null) {
+            user.setName(userDtoRequest.getName());
         }
 
-        return userMapper.toUserDto(userRepository.updateUser(userId, user));
+        return UserMapper.mapToUserDto(userRepository.updateUser(userId, user));
     }
 
     @Override
@@ -54,9 +56,9 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteUser(userId);
     }
 
-    private void isEmailExists(UserDto userDto) {
-        userRepository.getUserByEmail(userDto.getEmail()).ifPresent(u -> {
-            throw new IllegalStateException("Данный Email уже используется");
+    private void isEmailExists(UserDtoRequest userDtoRequest) {
+        userRepository.getUserByEmail(userDtoRequest.getEmail()).ifPresent(u -> {
+            throw new DuplicateDataException("Данный Email уже используется");
         });
     }
 
