@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -15,7 +15,7 @@ public interface ItemRepository {
 
     List<Item> searchItemToRent(String request);
 
-    Item saveItem(ItemDto item, User user);
+    Item saveItem(ItemDtoRequest item, User user);
 
-    Item editItem(ItemDto item, Long itemId);
+    Item editItem(ItemDtoRequest item, Long itemId);
 }

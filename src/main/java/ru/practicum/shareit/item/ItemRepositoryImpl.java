@@ -2,7 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private static final HashMap<Long, Item> ITEMS = new HashMap<>();
+    private final HashMap<Long, Item> ITEMS = new HashMap<>();
 
     @Override
     public List<Item> getItems(Long userId) {
@@ -39,21 +39,18 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item saveItem(ItemDto itemDto, User user) {
+    public Item saveItem(ItemDtoRequest itemDto, User user) {
         Long id = getNextId();
-        Item newItem = Item.builder()
-                .id(id)
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .owner(user)
-                .build();
+        Item newItem = ItemMapper.mapDtoRequestToItem(itemDto);
+        newItem.setId(id);
+        newItem.setOwner(user);
+
         ITEMS.put(id, newItem);
         return newItem;
     }
 
     @Override
-    public Item editItem(ItemDto itemDto, Long itemId) {
+    public Item editItem(ItemDtoRequest itemDto, Long itemId) {
         Item storedItem = ITEMS.get(itemId);
         if (itemDto.getName() != null) {
             storedItem.setName(itemDto.getName());
