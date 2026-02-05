@@ -21,7 +21,7 @@ public class ErrorHandler {
     // Обработка DuplicateDataException
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleDuplicateData(DuplicateDataException e){
+    public ErrorResponse handleDuplicateData(DuplicateDataException e) {
         return new ErrorResponse("Недоступно.", e.getMessage());
     }
 

@@ -15,23 +15,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private final HashMap<Long, Item> ITEMS = new HashMap<>();
+    private final HashMap<Long, Item> items = new HashMap<>();
 
     @Override
     public List<Item> getItems(Long userId) {
-        return ITEMS.values().stream()
+        return items.values().stream()
                 .filter(item -> item.getOwner().getId().equals(userId))
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Item> getItemById(Long itemId) {
-        return Optional.ofNullable(ITEMS.get(itemId));
+        return Optional.ofNullable(items.get(itemId));
     }
 
     @Override
     public List<Item> searchItemToRent(String text) {
-        return ITEMS.values().stream()
+        return items.values().stream()
                 .filter(item -> item.getName() != null && item.getName().toLowerCase().contains(text)
                         || item.getDescription() != null && item.getDescription().toLowerCase().contains(text))
                 .filter(item -> item.getAvailable() != null && item.getAvailable())
@@ -45,13 +45,13 @@ public class ItemRepositoryImpl implements ItemRepository {
         newItem.setId(id);
         newItem.setOwner(user);
 
-        ITEMS.put(id, newItem);
+        items.put(id, newItem);
         return newItem;
     }
 
     @Override
     public Item editItem(ItemDtoRequest itemDto, Long itemId) {
-        Item storedItem = ITEMS.get(itemId);
+        Item storedItem = items.get(itemId);
         if (itemDto.getName() != null) {
             storedItem.setName(itemDto.getName());
         }
@@ -65,7 +65,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     private Long getNextId() {
-        long currentId = ITEMS.keySet().stream().mapToLong(id -> id).max().orElse(0);
+        long currentId = items.keySet().stream().mapToLong(id -> id).max().orElse(0);
         return ++currentId;
     }
 
