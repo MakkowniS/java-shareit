@@ -15,10 +15,10 @@ public class UserMapper {
     }
 
     public static User mapDtoRequestToUser(UserDtoRequest userDtoRequest) {
-        return User.builder()
-                .name(userDtoRequest.getName())
-                .email(userDtoRequest.getEmail())
-                .build();
+        User user = new User();
+        user.setName(userDtoRequest.getName());
+        user.setEmail(userDtoRequest.getEmail());
+        return user;
     }
 
 }
