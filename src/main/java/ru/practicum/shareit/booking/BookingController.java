@@ -44,7 +44,7 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public void changeBookingState(@PathVariable("bookingId") Long bookingId,
-                                   @RequestParam Boolean approved){
+                                   @RequestParam(required = true) Boolean approved){
         bookingService.changeBookingState(bookingId, approved);
     }
 
