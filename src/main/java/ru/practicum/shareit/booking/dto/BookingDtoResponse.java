@@ -1,15 +1,16 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.booking.BookingStatus;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-bookings.
  */
 @Data
+@Builder
 public class BookingDtoResponse {
     private Long id;
     private Instant start;
