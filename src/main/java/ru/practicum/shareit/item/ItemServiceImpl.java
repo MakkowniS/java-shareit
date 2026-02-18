@@ -21,49 +21,60 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoResponse> getItems(Long userId) {
-        userRepository.getUserById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
 
-        return itemRepository.getItems(userId).stream()
+        return itemRepository.findByOwner_Id(userId).stream()
                 .map(ItemMapper::mapToItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public ItemDtoResponse getItemById(Long itemId) {
-        return itemRepository.getItemById(itemId)
+        return itemRepository.findById(itemId)
                 .map(ItemMapper::mapToItemDto)
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
     }
 
     @Override
-    public List<ItemDtoResponse> searchItemToRent(String request) {
-        if (request.isBlank() || request == null) {
+    public List<ItemDtoResponse> searchItemToRent(String text) {
+        if (text == null || text.isBlank()) {
             return List.of();
         }
-        String text = request.toLowerCase();
 
-        return itemRepository.searchItemToRent(text).stream()
+        return itemRepository.searchItemsToRent(text).stream()
                 .map(ItemMapper::mapToItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ItemDtoResponse saveItem(ItemDtoRequest item, Long userId) {
-        User user = userRepository.getUserById(userId)
+    public ItemDtoResponse saveItem(ItemDtoRequest dto, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Указанного пользователя не существует"));
-        return ItemMapper.mapToItemDto(itemRepository.saveItem(item, user));
+        Item newItem = ItemMapper.mapDtoRequestToItem(dto);
+        newItem.setOwner(user);
+        return ItemMapper.mapToItemDto(itemRepository.save(newItem));
     }
 
     @Override
-    public ItemDtoResponse editItem(ItemDtoRequest itemDto, Long itemId, Long userId) {
-        Item item = itemRepository.getItemById(itemId)
+    public ItemDtoResponse editItem(ItemDtoRequest dto, Long itemId, Long userId) {
+        Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
 
         if (!item.getOwner().getId().equals(userId)) {
             throw new SecurityException("У вас нет доступа к редактированию данной вещи");
         }
 
-        return ItemMapper.mapToItemDto(itemRepository.editItem(itemDto, itemId));
+        if (dto.getName() != null) {
+            item.setName(dto.getName());
+        }
+        if (dto.getDescription() != null) {
+            item.setDescription(dto.getDescription());
+        }
+        if (dto.getAvailable() != null) {
+            item.setAvailable(dto.getAvailable());
+        }
+
+        return ItemMapper.mapToItemDto(itemRepository.save(item));
     }
 }

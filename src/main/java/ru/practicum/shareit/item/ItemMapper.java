@@ -11,17 +11,17 @@ public class ItemMapper {
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
-                .available(item.getAvailable())
+                .available(item.isAvailable())
                 .request(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
     public static Item mapDtoRequestToItem(ItemDtoRequest dtoRequest) {
-        return Item.builder()
-                .name(dtoRequest.getName())
-                .description(dtoRequest.getDescription())
-                .available(dtoRequest.getAvailable())
-                .build();
+        Item item = new Item();
+        item.setName(dtoRequest.getName());
+        item.setDescription(dtoRequest.getDescription());
+        item.setAvailable(dtoRequest.getAvailable());
+        return item;
     }
 
 }
