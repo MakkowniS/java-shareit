@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item;
 
+import ru.practicum.shareit.item.comment.dto.CommentDtoRequest;
+import ru.practicum.shareit.item.comment.dto.CommentDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoResponseShort;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.item.dto.ItemDtoResponseWithBooking;
@@ -14,6 +16,8 @@ public interface ItemService {
     List<ItemDtoResponseShort> searchItemToRent(String request);
 
     ItemDtoResponseShort saveItem(ItemDtoRequest item, Long userId);
+
+    CommentDtoResponse saveComment(CommentDtoRequest dtoRequest, Long userId, Long itemId);
 
     ItemDtoResponseShort editItem(ItemDtoRequest item, Long itemId, Long userId);
 }
