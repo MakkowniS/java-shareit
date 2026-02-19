@@ -20,7 +20,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @GetMapping
-    public List<BookingDtoResponse> getBookingsByState(@RequestParam @DefaultValue("ALL") String state,
+    public List<BookingDtoResponse> getBookingsByState(@RequestParam(defaultValue = "ALL") String state,
                                                        @RequestHeader("X-Sharer-User-Id") Long userId) {
         return bookingService.getBookingsByState(state, userId);
     }
@@ -31,7 +31,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<BookingDtoResponse> getBookingByStateForOwner(@RequestParam @DefaultValue("ALL") String state,
+    public List<BookingDtoResponse> getBookingByStateForOwner(@RequestParam(defaultValue = "ALL") String state,
                                                               @RequestHeader("X-Sharer-User-Id") Long userId){
         return bookingService.getBookingByStateForOwner(state, userId);
     }

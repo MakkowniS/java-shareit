@@ -18,4 +18,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     """)
     List<Item> searchItemsToRent(String text);
 
+    Boolean existsByOwner_Id(Long ownerId);
+
 }

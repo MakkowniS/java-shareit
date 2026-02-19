@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -23,7 +24,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDtoResponse> getBookingsByState(String state, Long userId) {
-        return List.of();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Указанного пользователя не существует"));
+
+        List<Booking> bookingsList = bookingRepository.findCurrentUserBooking(userId, state);
+
+        return BookingMapper.mapToBookingDtoResponse(bookingsList);
     }
 
     @Override
@@ -34,8 +40,19 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoResponse> getBookingByStateForOwner(String state, Long userId) {
-        return List.of();
+    public List<BookingDtoResponse> getBookingByStateForOwner(String state, Long ownerId) {
+
+        // Проверка User
+        User user = userRepository.findById(ownerId)
+                .orElseThrow(() -> new NotFoundException("Указанного пользователя не существует"));
+
+        // Проверка на владение вещами
+        if (!itemRepository.existsByOwner_Id(ownerId)) {
+            throw new NotFoundException("Пользователь не владеет ни одной вещью");
+        }
+
+        List<Booking> bookingsList = bookingRepository.findOwnerBooking(ownerId, state);
+        return BookingMapper.mapToBookingDtoResponse(bookingsList);
     }
 
     @Override
