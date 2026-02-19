@@ -15,5 +15,5 @@ public interface BookingService {
 
     BookingDtoResponse saveBooking(@Valid BookingDtoRequest dtoRequest, Long userId);
 
-    void changeBookingState(Long bookingId, Boolean approved);
+    BookingDtoResponse changeBookingState(Long bookingId, Boolean approved, Long userId);
 }

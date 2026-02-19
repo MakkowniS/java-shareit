@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.shareit.item.model.Item;
 
 import java.time.Instant;
 import java.util.List;
@@ -51,6 +50,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByItemIdInAndStateNot(List<Long> itemIds, BookingStatus state);
 
     // Поиск арендовал ли пользователь вещь
-    Boolean existsByBookerIdAndItemIdAndEndBeforeAndState(Long bookerId, Long itemId, Instant now, BookingStatus state);
+    @Query("""
+            SELECT COUNT(b) > 0 FROM Booking b
+            WHERE b.booker.id = :bookerId
+            AND b.item.id = :itemId
+            AND b.state = :state
+            AND b.end < CURRENT_TIMESTAMP
+    """)
+    Boolean existsFinishedBooking(Long bookerId, Long itemId, BookingStatus state);
 
 }

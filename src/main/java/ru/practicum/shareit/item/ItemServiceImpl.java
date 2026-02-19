@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.error.NotFoundException;
+import ru.practicum.shareit.error.WrongRequestException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.comment.CommentRepository;
@@ -81,10 +82,10 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
 
-        boolean hasBooking = bookingRepository.existsByBookerIdAndItemIdAndEndBeforeAndState(
-                userId, itemId, Instant.now(), BookingStatus.APPROVED);
+        boolean hasBooking = bookingRepository.existsFinishedBooking(
+                userId, itemId, BookingStatus.APPROVED);
         if (!hasBooking) {
-            throw new NotFoundException("Аренда не завершена или вы не арендовали данную вещь");
+            throw new WrongRequestException("Аренда не завершена или вы не арендовали данную вещь");
         }
 
         Comment comment = CommentMapper.mapDtoToComment(dtoRequest, author, item);

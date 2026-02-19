@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.error.NotFoundException;
+import ru.practicum.shareit.error.WrongRequestException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
@@ -61,7 +62,9 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException("Указанного пользователя не существует"));
         Item item = itemRepository.findById(dtoRequest.getItemId())
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
-
+        if (!item.isAvailable()){
+            throw new WrongRequestException("Эта вещь недоступна для бронирования");
+        }
         Booking booking = BookingMapper.mapDtoRequestToBooking(dtoRequest);
         booking.setItem(item);
         booking.setBooker(user);
@@ -72,15 +75,18 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public void changeBookingState(Long bookingId, Boolean approved) {
+    public BookingDtoResponse changeBookingState(Long bookingId, Boolean approved, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
+        if (!booking.getItem().getOwner().getId().equals(userId)) {
+            throw new SecurityException("У вас нет доступа на подтверждение этой брони");
+        }
         if (approved) {
             booking.setState(BookingStatus.APPROVED);
         } else {
             booking.setState(BookingStatus.REJECTED);
         }
 
-        bookingRepository.save(booking);
+        return BookingMapper.mapToBookingDtoResponse(bookingRepository.save(booking));
     }
 }
