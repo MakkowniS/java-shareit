@@ -7,7 +7,9 @@ import ru.practicum.shareit.user.model.User;
 
 @Entity
 @Table(name = "items")
-@Getter @Setter @EqualsAndHashCode(of = "id")
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

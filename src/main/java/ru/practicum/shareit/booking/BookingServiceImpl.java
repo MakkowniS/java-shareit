@@ -62,7 +62,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new NotFoundException("Указанного пользователя не существует"));
         Item item = itemRepository.findById(dtoRequest.getItemId())
                 .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
-        if (!item.isAvailable()){
+        if (!item.isAvailable()) {
             throw new WrongRequestException("Эта вещь недоступна для бронирования");
         }
         Booking booking = BookingMapper.mapDtoRequestToBooking(dtoRequest);

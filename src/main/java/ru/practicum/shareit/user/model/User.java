@@ -5,7 +5,10 @@ import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter @ToString @EqualsAndHashCode(of = "id")
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

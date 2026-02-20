@@ -27,7 +27,7 @@ public class BookingMapper {
                 .collect(Collectors.toList());
     }
 
-    public static Booking mapDtoRequestToBooking(BookingDtoRequest dtoRequest){
+    public static Booking mapDtoRequestToBooking(BookingDtoRequest dtoRequest) {
         Booking booking = new Booking();
         booking.setStart(dtoRequest.getStart());
         booking.setEnd(dtoRequest.getEnd());

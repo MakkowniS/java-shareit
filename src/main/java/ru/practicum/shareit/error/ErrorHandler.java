@@ -20,7 +20,7 @@ public class ErrorHandler {
     // Обработка WrongRequest
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleWrongRequest(WrongRequestException e){
+    public ErrorResponse handleWrongRequest(WrongRequestException e) {
         return new ErrorResponse("Отказ.", e.getMessage());
     }
 

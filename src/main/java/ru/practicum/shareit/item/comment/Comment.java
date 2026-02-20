@@ -12,7 +12,10 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "comments")
-@Getter @Setter @ToString @EqualsAndHashCode(of = "id")
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 public class Comment {
 
     @Id

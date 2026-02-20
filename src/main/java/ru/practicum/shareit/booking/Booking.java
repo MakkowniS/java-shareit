@@ -7,12 +7,12 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
 
-/**
- * TODO Sprint add-bookings.
- */
 @Entity
 @Table(name = "bookings")
-@Getter @Setter @ToString @EqualsAndHashCode(of = "id")
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(of = "id")
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
