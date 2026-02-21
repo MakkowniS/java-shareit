@@ -8,7 +8,6 @@ import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
-import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.error.WrongRequestException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentMapper;
@@ -39,16 +38,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoResponseWithBooking> getItems(Long userId) {
-        checkUserExists(userId);
+        userRepository.findByIdOrThrow(userId);
         List<Item> items = itemRepository.findByOwner_Id(userId);
         return fillDtoWithBookingsAndComments(items, userId);
     }
 
     @Override
     public ItemDtoResponseWithBooking getItemById(Long itemId, Long userId) {
-        checkUserExists(userId);
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
+        userRepository.findByIdOrThrow(userId);
+        Item item = itemRepository.findByIdOrThrow(itemId);
 
         return fillDtoWithBookingsAndComments(List.of(item), userId).getFirst();
     }
@@ -67,8 +65,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDtoResponseShort saveItem(ItemDtoRequest dto, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Указанного пользователя не существует"));
+        User user = userRepository.findByIdOrThrow(userId);
         Item newItem = ItemMapper.mapDtoRequestToItem(dto);
         newItem.setOwner(user);
         return ItemMapper.mapToItemDtoShort(itemRepository.save(newItem));
@@ -77,10 +74,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public CommentDtoResponse saveComment(CommentDtoRequest dtoRequest, Long userId, Long itemId) {
-        User author = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
+        User author = userRepository.findByIdOrThrow(userId);
+        Item item = itemRepository.findByIdOrThrow(itemId);
 
         boolean hasBooking = bookingRepository.existsFinishedBooking(
                 userId, itemId, BookingStatus.APPROVED);
@@ -97,8 +92,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDtoResponseShort editItem(ItemDtoRequest dto, Long itemId, Long userId) {
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Вещь не найдена"));
+        userRepository.findByIdOrThrow(userId);
+        Item item = itemRepository.findByIdOrThrow(itemId);
 
         if (!item.getOwner().getId().equals(userId)) {
             throw new SecurityException("У вас нет доступа к редактированию данной вещи");
@@ -168,11 +163,5 @@ public class ItemServiceImpl implements ItemService {
                 .min(Comparator.comparing(Booking::getStart))
                 .map(BookingMapper::mapToBookingDtoResponse)
                 .orElse(null);
-    }
-
-    private void checkUserExists(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("Пользователь не найден");
-        }
     }
 }

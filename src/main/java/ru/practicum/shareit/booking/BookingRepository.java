@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -58,4 +59,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             """)
     Boolean existsFinishedBooking(Long bookerId, Long itemId, BookingStatus state);
 
+    @Query("""
+            select count(b) > 0
+            from Booking b
+            where b.item.id = :itemId
+            and b.state != 'REJECTED'
+            and b.start < :end
+            and b.end > :start
+            """)
+    Boolean existsOverlapping(Long itemId, Instant start, Instant end);
+
+    Boolean existsByIdAndBookerId(Long bookingId, Long bookerId);
 }
