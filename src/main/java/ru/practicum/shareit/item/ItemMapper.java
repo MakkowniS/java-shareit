@@ -1,26 +1,37 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.ItemDtoResponseShort;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
+import ru.practicum.shareit.item.dto.ItemDtoResponseWithBooking;
 import ru.practicum.shareit.item.model.Item;
 
 public class ItemMapper {
 
-    public static ItemDtoResponse mapToItemDto(Item item) {
-        return ItemDtoResponse.builder()
+    public static ItemDtoResponseShort mapToItemDtoShort(Item item) {
+        return ItemDtoResponseShort.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
-                .available(item.getAvailable())
-                .request(item.getRequest() != null ? item.getRequest().getId() : null)
+                .available(item.isAvailable())
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
     public static Item mapDtoRequestToItem(ItemDtoRequest dtoRequest) {
-        return Item.builder()
-                .name(dtoRequest.getName())
-                .description(dtoRequest.getDescription())
-                .available(dtoRequest.getAvailable())
+        Item item = new Item();
+        item.setName(dtoRequest.getName());
+        item.setDescription(dtoRequest.getDescription());
+        item.setAvailable(dtoRequest.getAvailable());
+        return item;
+    }
+
+    public static ItemDtoResponseWithBooking mapToItemDtoWithBooking(Item item) {
+        return ItemDtoResponseWithBooking.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.isAvailable())
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 

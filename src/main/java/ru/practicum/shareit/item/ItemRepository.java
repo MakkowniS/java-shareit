@@ -1,21 +1,31 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.item.dto.ItemDtoRequest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface ItemRepository {
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> getItems(Long userId);
+    List<Item> findByOwner_Id(Long ownerId);
 
-    Optional<Item> getItemById(Long itemId);
+    @Query("""
+                    select i from Item i
+                    where i.available = true
+                    and (lower(i.name) like lower(concat('%', :text, '%'))
+                    or lower(i.description) like lower(concat('%', :text, '%')))
+            """)
+    List<Item> searchItemsToRent(String text);
 
-    List<Item> searchItemToRent(String request);
+    Boolean existsByOwner_Id(Long ownerId);
 
-    Item saveItem(ItemDtoRequest item, User user);
+    Boolean existsByIdAndOwner_Id(Long itemId, Long ownerId);
 
-    Item editItem(ItemDtoRequest item, Long itemId);
+    default Item findByIdOrThrow(Long id) {
+        return findById(id)
+                .orElseThrow(() -> new NotFoundException("Вещь с id:" + id + " не найдена"));
+    }
+
 }

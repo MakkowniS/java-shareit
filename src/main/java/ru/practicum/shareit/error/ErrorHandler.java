@@ -1,6 +1,7 @@
 package ru.practicum.shareit.error;
 
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,11 +13,16 @@ import ru.practicum.shareit.validation.ValidationViolation;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice({
-        "ru.practicum.shareit.user",
-        "ru.practicum.shareit.item"
-})
+@RestControllerAdvice
+@Slf4j
 public class ErrorHandler {
+
+    // Обработка WrongRequest
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleWrongRequest(WrongRequestException e) {
+        return new ErrorResponse("Отказ.", e.getMessage());
+    }
 
     // Обработка DuplicateDataException
     @ExceptionHandler
