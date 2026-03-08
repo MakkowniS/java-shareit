@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
@@ -22,6 +23,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Boolean existsByOwner_Id(Long ownerId);
 
     Boolean existsByIdAndOwner_Id(Long itemId, Long ownerId);
+
+    List<Item> findAllByRequestIdIn(List<Long> requestIds);
 
     default Item findByIdOrThrow(Long id) {
         return findById(id)
