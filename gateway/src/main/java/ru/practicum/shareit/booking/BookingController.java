@@ -63,7 +63,7 @@ public class BookingController {
 	@PatchMapping("/{bookingId}")
 	public ResponseEntity<Object> changeBookingState(@RequestHeader("X-Sharer-User-Id") long userId,
 													 @Positive @PathVariable Long bookingId,
-													 @RequestParam(required = true) Boolean approved){
+													 @RequestParam Boolean approved){
 		log.info("Смена статуса бронирования ID={}, userId={}", bookingId, userId);
 		return bookingClient.changeBookingState(userId, bookingId, approved);
 	}

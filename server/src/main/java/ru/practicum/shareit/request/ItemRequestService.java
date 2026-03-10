@@ -7,11 +7,11 @@ import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
 import java.util.List;
 
 public interface ItemRequestService {
-    public ItemRequestDto saveItemRequest(ItemRequestRequestDto dtoRequest, Long userId);
+    ItemRequestDto saveItemRequest(ItemRequestRequestDto dtoRequest, Long userId);
 
-    public ItemRequestDto getItemRequestById(Long id, Long userId);
+    ItemRequestDto getItemRequestById(Long id, Long userId);
 
-    public List<ItemRequestDto> getAllItemRequests(Long userId);
+    List<ItemRequestDto> getAllItemRequests(Long userId);
 
-    public List<ItemRequestWithAnswersDto> getAllItemRequestsWithAnswers(Long userId);
+    List<ItemRequestWithAnswersDto> getAllItemRequestsWithAnswers(Long userId);
 }

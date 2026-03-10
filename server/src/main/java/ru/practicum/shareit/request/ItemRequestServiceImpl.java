@@ -36,7 +36,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestWithAnswersDto> getAllItemRequestsWithAnswers(Long userId) {
-        User user = userRepository.findByIdOrThrow(userId);
+        userRepository.findByIdOrThrow(userId);
 
         // Получаем все запросы созданные пользователем
         List<ItemRequest> itemRequestsList = itemRequestRepository.getAllByRequesterIdOrderByCreatedDesc(userId);
