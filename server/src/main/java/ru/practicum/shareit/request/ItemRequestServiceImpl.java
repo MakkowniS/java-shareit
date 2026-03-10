@@ -38,14 +38,19 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestWithAnswersDto> getAllItemRequestsWithAnswers(Long userId) {
         User user = userRepository.findByIdOrThrow(userId);
 
+        // Получаем все запросы созданные пользователем
         List<ItemRequest> itemRequestsList = itemRequestRepository.getAllByRequesterIdOrderByCreatedDesc(userId);
+
+        // Получаем список ID запросов
         List<Long> requestsIds = itemRequestsList.stream()
                 .map(ItemRequest::getId)
                 .toList();
 
+        // Получаем список Items отсортированный по ID Запроса
         Map<Long, List<Item>> itemsByRequest = itemRepository.findAllByRequestIdIn(requestsIds).stream()
                 .collect(Collectors.groupingBy(item -> item.getRequest().getId()));
 
+        // Собираем список и мапим в RequestDto присущие Items
         return itemRequestsList.stream()
                 .map(request -> ItemRequestMapper.mapToItemRequestWithAnswers(request,
                         itemsByRequest.getOrDefault(request.getId(), List.of())))
