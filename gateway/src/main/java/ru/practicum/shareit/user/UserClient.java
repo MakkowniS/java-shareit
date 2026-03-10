@@ -3,18 +3,19 @@ package ru.practicum.shareit.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
+import ru.practicum.shareit.user.dto.UserDtoRequest;
 
 @Service
 public class UserClient extends BaseClient {
     private static final String API_PREFIX = "/users";
 
     @Autowired
-    public UserClient(@Value("http://localhost:9090") String serverUrl, RestTemplateBuilder builder, RestTemplate restTemplate) {
+    public UserClient(@Value("http://localhost:9090") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
@@ -23,5 +24,24 @@ public class UserClient extends BaseClient {
         );
     }
 
+    public ResponseEntity<Object> getUsers(){
+        return get("");
+    }
+
+    public ResponseEntity<Object> getUserById(Long userId){
+        return get("/" +  userId);
+    }
+
+    public ResponseEntity<Object> createUser(UserDtoRequest userDtoRequest){
+        return post("",  userDtoRequest);
+    }
+
+    public ResponseEntity<Object> updateUser(Long userId, UserDtoRequest userDtoRequest){
+        return patch("/" + userId, userDtoRequest);
+    }
+
+    public ResponseEntity<Object> deleteUser(Long userId){
+        return delete("/" + userId);
+    }
 
 }

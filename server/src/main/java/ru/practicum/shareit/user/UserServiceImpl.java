@@ -62,8 +62,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long userId) {
+    public UserDtoResponse deleteUser(Long userId) {
+        User user = userRepository.findByIdOrThrow(userId);
         userRepository.deleteById(userId);
+        return UserMapper.mapToUserDto(user);
     }
 
     private void isEmailExists(UserDtoRequest userDtoRequest) {

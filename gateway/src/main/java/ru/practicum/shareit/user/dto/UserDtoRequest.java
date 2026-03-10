@@ -10,6 +10,6 @@ public class UserDtoRequest {
     String name;
 
     @NotBlank
-    @Email
+    @Email(message = "Некорректный Email")
     String email;
 }
