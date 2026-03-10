@@ -1,56 +1,55 @@
 package ru.practicum.shareit.item;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.comment.dto.CommentDtoRequest;
-import ru.practicum.shareit.item.comment.dto.CommentDtoResponse;
-import ru.practicum.shareit.item.dto.ItemDtoResponseShort;
 import ru.practicum.shareit.item.dto.ItemDtoRequest;
-import ru.practicum.shareit.item.dto.ItemDtoResponseWithBooking;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
 
-    private final ItemService itemService;
+    private final ItemClient itemClient;
 
     @GetMapping
-    public List<ItemDtoResponseWithBooking> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.getItems(userId);
+    public ResponseEntity<Object> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemClient.getItems(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoResponseWithBooking getItemById(@PathVariable Long itemId,
-                                                  @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.getItemById(itemId, userId);
+    public ResponseEntity<Object> getItemById(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                              @Positive @PathVariable Long itemId) {
+        return itemClient.getItemById(itemId, userId);
     }
 
     @GetMapping("/search")
-    public List<ItemDtoResponseShort> searchItemToRent(@RequestParam String text) {
-        return itemService.searchItemToRent(text);
+    public ResponseEntity<Object> searchItemToRent(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                   @NotBlank String text) {
+        return itemClient.searchItemToRent(userId, text);
     }
 
     @PostMapping
-    public ItemDtoResponseShort saveItem(@Valid @RequestBody ItemDtoRequest item,
-                                         @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.saveItem(item, userId);
+    public ResponseEntity<Object> saveItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                           @Valid @RequestBody ItemDtoRequest dtoRequest) {
+        return itemClient.saveItem(userId, dtoRequest);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDtoResponse saveComment(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                          @PathVariable Long itemId,
-                                          @Valid @RequestBody CommentDtoRequest comment) {
-        return itemService.saveComment(comment, userId, itemId);
+    public ResponseEntity<Object> saveComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                              @Positive @PathVariable Long itemId,
+                                              @Valid @RequestBody CommentDtoRequest dtoRequest) {
+        return itemClient.saveComment(userId, itemId, dtoRequest);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDtoResponseShort editItem(@RequestBody ItemDtoRequest item,
-                                         @PathVariable Long itemId,
-                                         @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.editItem(item, itemId, userId);
+    public ResponseEntity<Object> editItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                           @Positive @PathVariable Long itemId,
+                                           @RequestBody ItemDtoRequest dtoRequest) {
+        return itemClient.editItem(userId, itemId, dtoRequest);
     }
 }
