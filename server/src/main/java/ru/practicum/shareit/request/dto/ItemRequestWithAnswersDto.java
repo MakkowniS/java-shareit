@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 public class ItemRequestWithAnswersDto {
     private Long id;
-    private String request;
+    private String description;
     private Long requester;
     private LocalDateTime created;
     List<ItemRequestAnswerDto> items;

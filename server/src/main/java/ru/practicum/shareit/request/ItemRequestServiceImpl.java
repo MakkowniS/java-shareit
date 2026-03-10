@@ -39,7 +39,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         userRepository.findByIdOrThrow(userId);
 
         // Получаем все запросы созданные пользователем
-        List<ItemRequest> itemRequestsList = itemRequestRepository.getAllByRequesterIdOrderByCreatedDesc(userId);
+        List<ItemRequest> itemRequestsList = itemRequestRepository.getAllByRequestorIdOrderByCreatedDesc(userId);
 
         // Получаем список ID запросов
         List<Long> requestsIds = itemRequestsList.stream()
@@ -58,12 +58,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto getItemRequestById(Long id, Long userId) {
+    public ItemRequestWithAnswersDto getItemRequestById(Long id, Long userId) {
         userRepository.findByIdOrThrow(userId);
         ItemRequest itemRequest = itemRequestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Запроса с таким ID не найдено"));
 
-        return ItemRequestMapper.mapToItemRequestDto(itemRequest);
+        List<Item> requestsItems = itemRepository.findAllByRequestIdIn(List.of(itemRequest.getId()));
+
+        return ItemRequestMapper.mapToItemRequestWithAnswers(itemRequest, requestsItems);
     }
 
     @Transactional
@@ -71,7 +73,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto saveItemRequest(ItemRequestRequestDto dtoRequest, Long userId) {
         User requestor = userRepository.findByIdOrThrow(userId);
         ItemRequest newItemRequest = ItemRequestMapper.mapRequestToItemRequest(dtoRequest);
-        newItemRequest.setRequester(requestor);
+        newItemRequest.setRequestor(requestor);
 
         return ItemRequestMapper.mapToItemRequestDto(itemRequestRepository.save(newItemRequest));
     }

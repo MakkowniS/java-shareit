@@ -28,7 +28,7 @@ public class ItemController {
     public ResponseEntity<Object> getItemById(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @Positive @PathVariable Long itemId) {
         log.info("Get Item by id={}, userId={}", itemId, userId);
-        return itemClient.getItemById(itemId, userId);
+        return itemClient.getItemById(userId, itemId);
     }
 
     @GetMapping("/search")

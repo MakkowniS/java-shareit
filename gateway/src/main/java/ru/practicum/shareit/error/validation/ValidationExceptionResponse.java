@@ -9,6 +9,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ValidationExceptionResponse {
 
-    private final List<ValidationViolation> violations;
+    private final List<ValidationViolation> error;
 
 }

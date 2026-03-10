@@ -14,14 +14,14 @@ public class ItemRequestMapper {
 
     public static ItemRequest mapRequestToItemRequest(ItemRequestRequestDto itemRequestDtoRequest) {
         ItemRequest itemRequest = new ItemRequest();
-        itemRequest.setRequest(itemRequestDtoRequest.getDescription());
+        itemRequest.setDescription(itemRequestDtoRequest.getDescription());
         return itemRequest;
     }
 
     public static ItemRequestDto mapToItemRequestDto(ItemRequest itemRequest) {
         return ItemRequestDto.builder()
                 .id(itemRequest.getId())
-                .description(itemRequest.getRequest())
+                .description(itemRequest.getDescription())
                 .created(itemRequest.getCreated())
                 .build();
     }
@@ -29,7 +29,7 @@ public class ItemRequestMapper {
     public static ItemRequestWithAnswersDto mapToItemRequestWithAnswers(ItemRequest itemRequest, List<Item> items) {
         return ItemRequestWithAnswersDto.builder()
                 .id(itemRequest.getId())
-                .request(itemRequest.getRequest())
+                .description(itemRequest.getDescription())
                 .created(itemRequest.getCreated())
                 .items(items.stream()
                         .map(item -> ItemRequestAnswerDto.builder()

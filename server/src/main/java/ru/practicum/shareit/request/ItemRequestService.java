@@ -9,7 +9,7 @@ import java.util.List;
 public interface ItemRequestService {
     ItemRequestDto saveItemRequest(ItemRequestRequestDto dtoRequest, Long userId);
 
-    ItemRequestDto getItemRequestById(Long id, Long userId);
+    ItemRequestWithAnswersDto getItemRequestById(Long id, Long userId);
 
     List<ItemRequestDto> getAllItemRequests(Long userId);
 

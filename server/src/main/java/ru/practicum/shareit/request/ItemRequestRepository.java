@@ -10,9 +10,9 @@ public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> 
 
     List<ItemRequest> getAllByOrderByCreatedDesc();
 
-    List<ItemRequest> getAllByRequesterIdOrderByCreatedDesc(Long requesterId);
+    List<ItemRequest> getAllByRequestorIdOrderByCreatedDesc(Long requesterId);
 
-    default ItemRequest findItemRequestByIdOrThrow(Long itemRequestId){
+    default ItemRequest findItemRequestByIdOrThrow(Long itemRequestId) {
         return findById(itemRequestId)
                 .orElseThrow(() -> new NotFoundException("Запрос с ID: " + itemRequestId + " не найден"));
     }

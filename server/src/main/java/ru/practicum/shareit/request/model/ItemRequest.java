@@ -9,7 +9,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "itemRequests")
+@Table(name = "requests")
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
@@ -19,12 +19,12 @@ public class ItemRequest {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "request_text", nullable = false)
-    private String request;
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requester_id", nullable = false)
-    private User requester;
+    @JoinColumn(name = "requestor_id", nullable = false)
+    private User requestor;
 
     @Column
     private LocalDateTime created = LocalDateTime.now();
