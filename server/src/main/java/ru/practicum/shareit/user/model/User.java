@@ -9,6 +9,8 @@ import lombok.*;
 @Setter
 @ToString
 @EqualsAndHashCode(of = "id")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

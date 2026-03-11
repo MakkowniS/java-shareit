@@ -35,10 +35,7 @@ public class UserServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        user = new User();
-        user.setId(1L);
-        user.setEmail("max@mail.ru");
-        user.setName("Max");
+        user = new User(1L, "Max", "max@mail.ru");
         userDtoRequest = new UserDtoRequest("Max", "max@mail.ru");
     }
 
@@ -92,10 +89,7 @@ public class UserServiceImplTest {
 
     @Test
     void updateUser_shouldUpdateNonNullFields(){
-        User oldUser = new User();
-        oldUser.setId(1L);
-        oldUser.setName("old");
-        oldUser.setEmail("old@mail.ru");
+        User oldUser = new User(1L, "old", "old@mail.ru");
         UserDtoRequest updateDto = new UserDtoRequest("New name", null);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(oldUser));

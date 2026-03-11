@@ -6,10 +6,12 @@ import lombok.Data;
 
 @Data
 public class UserDtoRequest {
+
     @NotBlank
     String name;
 
     @NotBlank
     @Email(message = "Некорректный Email")
     String email;
+
 }

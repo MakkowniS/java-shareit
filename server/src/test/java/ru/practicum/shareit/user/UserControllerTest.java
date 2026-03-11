@@ -38,11 +38,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userDtoResponse = UserDtoResponse.builder()
-                .id(1L)
-                .name("User")
-                .email("user@mail.com")
-                .build();
+        userDtoResponse = new UserDtoResponse(1L,"User", "user@mail.com");
     }
 
     @Test
@@ -74,7 +70,6 @@ public class UserControllerTest {
     void createUser_shouldReturnCreatedUser() throws Exception {
         UserDtoRequest request = new UserDtoRequest("User", "user@mail.ru");
         when(userService.saveUser(any())).thenReturn(userDtoResponse);
-
 
         mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(request))
