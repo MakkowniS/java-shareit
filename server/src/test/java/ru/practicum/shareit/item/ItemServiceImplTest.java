@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cglib.core.Local;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.error.WrongRequestException;
@@ -22,6 +23,7 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,18 +51,8 @@ public class ItemServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        owner = new User();
-        owner.setId(1L);
-        owner.setName("Owner");
-        owner.setEmail("owner@mail.ru");
-
-        item = new Item();
-        item.setId(1L);
-        item.setName("Drill");
-        item.setDescription("Powerful drill");
-        item.setAvailable(true);
-        item.setOwner(owner);
-        item.setRequest(null);
+        owner = new User(1L, "Owner", "owner@mail.ru");
+        item = new Item(1L, "Drill", "Powerful drill", true, owner, null);
     }
 
     @Test
@@ -93,12 +85,7 @@ public class ItemServiceImplTest {
 
     @Test
     void saveComment_shouldSaveAndReturnComment(){
-        Comment comment = new Comment();
-        comment.setId(1L);
-        comment.setText("Lorem");
-        comment.setAuthor(owner);
-        comment.setItem(item);
-        comment.setCreated(Instant.now());
+        Comment comment = new Comment(1L, "Lorem", item, owner, LocalDateTime.now());
 
         when(itemRepository.findByIdOrThrow(1L)).thenReturn(item);
         when(userRepository.findByIdOrThrow(1L)).thenReturn(owner);
