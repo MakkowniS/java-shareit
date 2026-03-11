@@ -44,7 +44,7 @@ public class ItemClient extends BaseClient {
         return post("", userId, dtoRequest);
     }
 
-    public ResponseEntity<Object> saveComment(Long userId, Long itemId ,CommentDtoRequest dtoRequest) {
+    public ResponseEntity<Object> saveComment(Long userId, Long itemId, CommentDtoRequest dtoRequest) {
         return post("/" + itemId + "/comment", userId, dtoRequest);
     }
 
