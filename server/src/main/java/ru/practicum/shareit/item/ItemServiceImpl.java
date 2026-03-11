@@ -87,11 +87,9 @@ public class ItemServiceImpl implements ItemService {
         if (!hasBooking) {
             throw new WrongRequestException("Аренда не завершена или вы не арендовали данную вещь");
         }
+        Comment newComment = CommentMapper.mapDtoToComment(dtoRequest, author, item);
 
-        Comment comment = CommentMapper.mapDtoToComment(dtoRequest, author, item);
-        comment = commentRepository.save(comment);
-
-        return CommentMapper.mapCommentToDtoResponse(comment);
+        return CommentMapper.mapCommentToDtoResponse(commentRepository.save(newComment));
     }
 
     @Override
