@@ -12,7 +12,6 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -38,7 +38,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userDtoResponse = new UserDtoResponse(1L,"User", "user@mail.com");
+        userDtoResponse = new UserDtoResponse(1L, "User", "user@mail.com");
     }
 
     @Test

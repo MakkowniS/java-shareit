@@ -23,7 +23,7 @@ public class UserServiceImplIntegrationTest {
     private final EntityManager em;
 
     @Test
-    void saveUser_shouldSaveUserInDb(){
+    void saveUser_shouldSaveUserInDb() {
         UserDtoRequest userDto = new UserDtoRequest("User", "user@mail.ru");
 
         service.saveUser(userDto);

@@ -88,7 +88,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void updateUser_shouldUpdateNonNullFields(){
+    void updateUser_shouldUpdateNonNullFields() {
         User oldUser = new User(1L, "old", "old@mail.ru");
         UserDtoRequest updateDto = new UserDtoRequest("New name", null);
 

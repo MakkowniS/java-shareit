@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.item.dto.ItemDtoRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestWithAnswersDto;
@@ -45,7 +44,7 @@ class ItemRequestControllerTest {
     @BeforeEach
     void setUp() {
         itemRequestDto = new ItemRequestDto(1L, "Description", LocalDateTime.now());
-        itemRequestWithAnswersDto = new ItemRequestWithAnswersDto(1L, "Description", 1L ,LocalDateTime.now(), List.of());
+        itemRequestWithAnswersDto = new ItemRequestWithAnswersDto(1L, "Description", 1L, LocalDateTime.now(), List.of());
     }
 
     @Test
