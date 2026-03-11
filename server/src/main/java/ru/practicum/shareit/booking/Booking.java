@@ -13,6 +13,8 @@ import java.time.Instant;
 @Setter
 @ToString
 @EqualsAndHashCode(of = "id")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
