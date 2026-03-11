@@ -1,14 +1,12 @@
 package ru.practicum.shareit.item.comment;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
@@ -16,6 +14,8 @@ import java.time.Instant;
 @Setter
 @ToString
 @EqualsAndHashCode(of = "id")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Comment {
 
     @Id
@@ -34,5 +34,5 @@ public class Comment {
     private User author;
 
     @Column
-    private Instant created = Instant.now();
+    private LocalDateTime created = LocalDateTime.now();
 }
