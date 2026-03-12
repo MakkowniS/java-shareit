@@ -61,6 +61,33 @@ class ItemRequestServiceImplTest {
     }
 
     @Test
+    void getItemRequestById_whenFound_shouldReturnDtoWithItems() {
+        Long userId = 1L;
+        Long requestId = 10L;
+
+        User user = new User(userId, "User", "user@mail.ru");
+        ItemRequest request = new ItemRequest(requestId, "Need a drill", user, LocalDateTime.now());
+
+        Item item = new Item(1L, "Drill", "Powerful", true, new User(), request);
+
+        when(userRepository.findByIdOrThrow(userId)).thenReturn(user);
+        when(itemRequestRepository.findById(requestId)).thenReturn(Optional.of(request));
+        when(itemRepository.findAllByRequestIdIn(List.of(requestId))).thenReturn(List.of(item));
+
+        ItemRequestWithAnswersDto result = itemRequestService.getItemRequestById(requestId, userId);
+
+        assertNotNull(result);
+        assertEquals(requestId, result.getId());
+        assertEquals("Need a drill", result.getDescription());
+        assertFalse(result.getItems().isEmpty());
+        assertEquals("Drill", result.getItems().getFirst().getName());
+
+        verify(userRepository).findByIdOrThrow(userId);
+        verify(itemRequestRepository).findById(requestId);
+        verify(itemRepository).findAllByRequestIdIn(anyList());
+    }
+
+    @Test
     void getItemRequestById_whenRequestNotFound_shouldThrowNotFoundException() {
         when(userRepository.findByIdOrThrow(anyLong())).thenReturn(user);
         when(itemRequestRepository.findById(anyLong())).thenReturn(Optional.empty());

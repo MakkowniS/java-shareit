@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.error.NotFoundException;
 import ru.practicum.shareit.error.WrongRequestException;
 import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.comment.CommentRepository;
@@ -122,11 +123,9 @@ public class ItemServiceImplTest {
 
     @Test
     void getItemById_whenUserIsOwner_shouldIncludeBookings() {
-        // Настраиваем вещь и владельца
         when(userRepository.findByIdOrThrow(anyLong())).thenReturn(owner);
         when(itemRepository.findByIdOrThrow(anyLong())).thenReturn(item);
 
-        // Настраиваем пустые списки для бронирований и комментов
         when(bookingRepository.findByItemIdInAndStateNot(anyList(), any())).thenReturn(List.of());
         when(commentRepository.findByItemIdIn(anyList())).thenReturn(List.of());
 
@@ -136,6 +135,18 @@ public class ItemServiceImplTest {
         assertEquals(item.getName(), result.getName());
 
         verify(bookingRepository).findByItemIdInAndStateNot(anyList(), any());
+    }
+
+    @Test
+    void saveItem_whenUserNotFound_shouldThrowNotFoundException() {
+        when(userRepository.findByIdOrThrow(anyLong()))
+                .thenThrow(new NotFoundException("Пользователь не найден"));
+
+        assertThrows(NotFoundException.class, () ->
+                itemService.saveItem(new ItemDtoRequest("Name", "Desc", true, null), 99L)
+        );
+
+        verify(itemRepository, never()).save(any());
     }
 
     @Test

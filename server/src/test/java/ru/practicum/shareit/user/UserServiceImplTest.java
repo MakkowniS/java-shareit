@@ -100,4 +100,69 @@ public class UserServiceImplTest {
         assertEquals("New name", result.getName());
         assertEquals("old@mail.ru", result.getEmail());
     }
+
+    @Test
+    void updateUser_whenUserNotFound_shouldThrowNotFoundException() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () ->
+                userService.updateUser(99L, new UserDtoRequest("Name", "email@mail.ru"))
+        );
+    }
+
+    @Test
+    void updateUser_shouldUpdateEmailWhenChanged() {
+        User user = new User(1L, "Old", "old@mail.ru");
+        UserDtoRequest updateDto = new UserDtoRequest(null, "new@mail.ru");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        UserDtoResponse result = userService.updateUser(1L, updateDto);
+
+        assertEquals("new@mail.ru", result.getEmail());
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void updateUser_whenEmailIsSame_shouldNotCallIsEmailExists() {
+        User user = new User(1L, "Old", "same@mail.ru");
+        UserDtoRequest updateDto = new UserDtoRequest(null, "same@mail.ru");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        userService.updateUser(1L, updateDto);
+
+        verify(userRepository, never()).findUserByEmail(anyString());
+    }
+
+    @Test
+    void deleteUser_whenUserExists_shouldDeleteAndReturnDto() {
+        Long userId = 1L;
+        User user = new User(userId, "John Doe", "john@example.com");
+
+        when(userRepository.findByIdOrThrow(userId)).thenReturn(user);
+        doNothing().when(userRepository).deleteById(userId);
+
+        UserDtoResponse result = userService.deleteUser(userId);
+
+        assertNotNull(result);
+        assertEquals(userId, result.getId());
+        assertEquals("John Doe", result.getName());
+
+        verify(userRepository, times(1)).findByIdOrThrow(userId);
+        verify(userRepository, times(1)).deleteById(userId);
+    }
+
+    @Test
+    void deleteUser_whenUserDoesNotExist_shouldThrowNotFoundException() {
+        Long userId = 99L;
+        when(userRepository.findByIdOrThrow(userId))
+                .thenThrow(new NotFoundException("Пользователь не найден"));
+
+        assertThrows(NotFoundException.class, () -> userService.deleteUser(userId));
+
+        verify(userRepository, never()).deleteById(anyLong());
+    }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -76,6 +77,24 @@ class ItemControllerTest {
     }
 
     @Test
+    void getItemById_shouldReturnItemWithBookings() throws Exception {
+        ItemDtoResponseWithBooking responseDto = new ItemDtoResponseWithBooking();
+        responseDto.setId(1L);
+        responseDto.setName("Item Name");
+
+        when(itemService.getItemById(anyLong(), anyLong()))
+                .thenReturn(responseDto);
+
+        mvc.perform(get("/items/{itemId}", 1L)
+                        .header("X-Sharer-User-Id", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("Item Name")));
+
+        verify(itemService).getItemById(1L, 1L);
+    }
+
+    @Test
     void searchItem_shouldUseRequestParam() throws Exception {
         when(itemService.searchItemToRent(anyString())).thenReturn(List.of(itemDtoShort));
 
@@ -83,6 +102,25 @@ class ItemControllerTest {
                         .param("text", "drill"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", is("Drill")));
+    }
+
+    @Test
+    void editItem_shouldReturnUpdatedItem() throws Exception {
+        ItemDtoRequest updateDto = new ItemDtoRequest("New Name", "New Desc", true, null);
+        ItemDtoResponseShort responseDto = new ItemDtoResponseShort(1L, "New Name", "New Desc", true, null);
+
+        when(itemService.editItem(any(ItemDtoRequest.class), anyLong(), anyLong()))
+                .thenReturn(responseDto);
+
+        mvc.perform(patch("/items/{itemId}", 1L)
+                        .header("X-Sharer-User-Id", 1L)
+                        .content(mapper.writeValueAsString(updateDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("New Name")));
+
+        verify(itemService).editItem(any(), eq(1L), eq(1L));
     }
 
     @Test
